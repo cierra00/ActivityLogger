@@ -1,18 +1,25 @@
 const express = require('express');
-const cors = require('cors');
-const corsOption = ('./middleware/corsOptions')
+const path = require('path');
 const EventEmitter = require('events');
-const { logger } = require('./middleware/logEvents');
+
 
 const app = express();
 const PORT = 3000;
 
-
 const eventEmitter = new EventEmitter();
 
-app.use(logger);
-app.use(cors());
-app.use(express.json());
+eventEmitter.on('action', (action)=>{
+    console.log(`actoion occured: ${action}`)
+});
 
-app.use('/', require('./routes/route'));
-// app.use('/register', require('./routes/register'));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route to serve the home page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
