@@ -8,6 +8,51 @@
 </head>
 <body>
     <h1 class="text-danger text-center mt-5">Activity Logger</h1>
-
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-12">
+                <button class="btn btn-danger" id="submitButton">Click Me!</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <form id="submitForm">
+                    <label for="inputField">Full Name:</label>
+                    <input type="text" id="inputField" name="name" required>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        const sendData = async(event)=>{
+            const payload = {
+                event: event,
+                timestamp: new Date().toISOString()
+            }
+            try{
+                const send = await fetch('http://localhost:3000/message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                console.log(`Server logged Data: ${event}`, data);
+            }catch (err){
+                console.error(`Error Occured during Log Process ${err}`)
+            }
+        }
+        const button = document.getElementById('submitButton');
+        const form = document.getElementById('submitForm');
+        
+        button.addEventListener('click', ()=>{
+            sendData('Button Clicked');
+        })
+        form.addEventListener('submit', ()=>{
+            sendData('Form Submited');
+        })
+    </script>
 </body>
 </html>
